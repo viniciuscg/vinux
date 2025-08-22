@@ -21,20 +21,17 @@ var yesNoOptions = []string{
 }
 
 var commitPrefixOptions = []string{
-	"feat: ",
-	"fix: ",
-	"docs: ",
-	"style: ",
-	"refactor: ",
-	"perf: ",
-	"test: ",
-	"chore: ",
-	"revert: ",
-	"build: ",
-	"ci: ",
-	"config: ",
-	"release: ",
-	"other: ",
+	"build:",
+	"chore:",
+	"ci:",
+	"docs:",
+	"feat:",
+	"fix:",
+	"perf:",
+	"refactor:",
+	"revert:",
+	"style:",
+	"test:",
 }
 
 var commitCmd = &cobra.Command{
@@ -93,7 +90,7 @@ func getFilesToCommit() []string {
 func selectFiles(files []string) []string {
 	var selected []string
 	prompt := &survey.MultiSelect{
-		Message: selectMessagePattern("Select files to add on stash"),
+		Message: selectMessagePattern("Select files to add on stash (based on Conventional Commits + commitlint config)"),
 		Options: files,
 	}
 	survey.AskOne(prompt, &selected)
