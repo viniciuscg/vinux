@@ -40,31 +40,34 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Commits changes to the repository",
 	Run: func(cmd *cobra.Command, args []string) {
-		notify.Print(
-			notify.TypeInfo,
-			"Starting commit process...",
-			nil,
-		)
-
-		files := getFilesToCommit()
-
-		selected := selectFiles(files)
-		if len(selected) == 0 {
-			notify.Print(
-				notify.TypeWarning,
-				"No files selected.",
-				nil,
-			)
-
-			return
-		}
-
-		addFiles(selected)
-		commit()
-		push()
+		start()
 	},
 }
 
+func start() {
+	notify.Print(
+		notify.TypeInfo,
+		"Starting commit process...",
+		nil,
+	)
+
+	files := getFilesToCommit()
+
+	selected := selectFiles(files)
+	if len(selected) == 0 {
+		notify.Print(
+			notify.TypeWarning,
+			"No files selected.",
+			nil,
+		)
+
+		return
+	}
+
+	addFiles(selected)
+	commit()
+	push()
+}
 func init() {
 	rootCmd.AddCommand(commitCmd)
 }
@@ -260,15 +263,5 @@ func yesOrNoCheck(ir input.InputReader, message string) bool {
 
 func commitAgain() {
 	getFilesToCommit()
-	cmd := exec.Command("bash", "-i", "-c", "vinux commit")
-	err := cmd.Run()
-	if err != nil {
-		notify.Print(
-			notify.TypeError,
-			"Running vinux commit.",
-			err,
-		)
-
-		return
-	}
+	start()
 }
