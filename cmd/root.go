@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// todo -> add description and usage
 var rootCmd = &cobra.Command{
 	Use:   "vinux",
 	Short: "Vinux CLI is your crazy Go-powered CLI!",
@@ -35,10 +34,12 @@ func printBanner() {
 	for _, line := range lines {
 		if strings.TrimSpace(line) == "" {
 			fmt.Println()
+
 			continue
 		}
 		primary.Println(line)
 	}
 
+	primary.Println("\nUse 'vinux --help' to see available commands.")
 	primary.Println("\n✨ May the Vini be with you! 🚀")
 }
