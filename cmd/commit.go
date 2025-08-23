@@ -216,7 +216,7 @@ func push() {
 	)
 
 	if hasOtherCommits() {
-		commitAgain()
+		recommit()
 	}
 }
 
@@ -255,7 +255,7 @@ func yesOrNoCheck(ir input.InputReader, message string) bool {
 	return false
 }
 
-func commitAgain() {
+func recommit() {
 	files := getFilesToCommit()
 	if len(files) == 0 {
 		notify.Print(
