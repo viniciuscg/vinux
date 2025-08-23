@@ -189,7 +189,6 @@ func selectedPrefix() string {
 }
 
 func push() {
-	//
 	if !hasToPush() {
 		notify.Print(
 			notify.TypeBlock,
@@ -261,7 +260,7 @@ func yesOrNoCheck(ir input.InputReader, message string) bool {
 
 func commitAgain() {
 	getFilesToCommit()
-	cmd := exec.Command("vinux", "commit")
+	cmd := exec.Command("bash", "-i", "-c", "vinux commit")
 	err := cmd.Run()
 	if err != nil {
 		notify.Print(
