@@ -189,13 +189,6 @@ func selectedPrefix() string {
 }
 
 func push() {
-	var selected string
-	prompt := &survey.Select{
-		Message: "Do you want to push the changes?",
-		Options: yesNoOptions,
-	}
-	survey.AskOne(prompt, &selected)
-
 	if !hasToPush() {
 		notify.Print(
 			notify.TypeBlock,
@@ -217,6 +210,7 @@ func push() {
 
 		return
 	}
+
 	notify.Print(
 		notify.TypeSuccess,
 		"Changes pushed successfully!",
