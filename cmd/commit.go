@@ -195,7 +195,10 @@ func push() {
 	}
 	survey.AskOne(prompt, &selected)
 
-	if !hasToPush(input.NewConsoleReader(os.Stdin)) {
+	if !hasToPush() {
+		if hasOtherCommits() {
+			commitAgain()
+		}
 		notify.Print(
 			notify.TypeBlock,
 			"Skipping push.",
@@ -224,8 +227,22 @@ func push() {
 	)
 }
 
-func hasToPush(ir input.InputReader) bool {
-	input := ir.ReadInput("Do you want to push the changes? (y or n): ")
+func hasToPush() bool {
+	return yesOrNoCheck(
+		input.NewConsoleReader(os.Stdin),
+		"Do you want to push the changes?",
+	)
+}
+
+func hasOtherCommits() bool {
+	return yesOrNoCheck(
+		input.NewConsoleReader(os.Stdin),
+		"Are there other commits to do?",
+	)
+}
+
+func yesOrNoCheck(ir input.InputReader, message string) bool {
+	input := ir.ReadInput(message + " (y or n): ")
 
 	cleanInput := strings.ToLower(strings.TrimSpace(input))
 
@@ -243,4 +260,9 @@ func hasToPush(ir input.InputReader) bool {
 		nil,
 	)
 	return false
+}
+
+func commitAgain() {
+	cmd := exec.Command("vinux", "commit")
+	cmd.Output()
 }
