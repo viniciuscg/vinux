@@ -37,25 +37,31 @@ func Print(
 	switch msgType {
 	case TypeError:
 		prefix = "❌ Error: "
-		primary = color.New(color.BgRed, color.Bold)
+		primary = color.New(color.FgHiRed, color.Bold)
+
 	case TypeWarning:
 		prefix = "⚠️ Warning: "
-		primary = color.New(color.BgYellow, color.Bold)
+		primary = color.New(color.FgHiYellow, color.Bold)
+
 	case TypeInfo:
 		prefix = "✨ Info: "
-		primary = color.New(color.BgHiYellow, color.Bold)
+		primary = color.New(color.FgHiCyan, color.Bold)
+
 	case TypeSuccess:
 		prefix = "✅ Success: "
-		primary = color.New(color.BgGreen, color.Bold)
+		primary = color.New(color.FgHiGreen, color.Bold)
+
 	case TypeWrite:
 		prefix = "✍️ Write: "
-		primary = color.New(color.BgCyan, color.Bold)
+		primary = color.New(color.FgHiBlue, color.Bold)
+
 	case TypeBlock:
 		prefix = "🚫 Block: "
-		primary = color.New(color.FgHiRed, color.Bold)
+		primary = color.New(color.FgMagenta, color.Bold)
+
 	default:
 		prefix = "❓ Unknown: "
-		primary = color.New(color.FgRed, color.Bold)
+		primary = color.New(color.FgWhite, color.Bold)
 	}
 
 	if err != nil {
