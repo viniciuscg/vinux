@@ -17,11 +17,6 @@ var selectMessagePattern = func(postFix string) string {
 	return postFix + " (space to select, enter to confirm):"
 }
 
-var yesNoOptions = []string{
-	"Yes",
-	"No",
-}
-
 var commitPrefixOptions = []string{
 	"build:",
 	"chore:",
@@ -52,6 +47,15 @@ func start() {
 	)
 
 	files := getFilesToCommit()
+	if len(files) == 0 {
+		notify.Print(
+			notify.TypeWarning,
+			"No changes to commit.",
+			nil,
+		)
+
+		return
+	}
 
 	selected := selectFiles(files)
 	if len(selected) == 0 {
@@ -68,6 +72,7 @@ func start() {
 	commit()
 	push()
 }
+
 func init() {
 	rootCmd.AddCommand(commitCmd)
 }
@@ -96,16 +101,6 @@ func getFilesToCommit() []string {
 		if len(parts) >= 2 {
 			files = append(files, parts[1])
 		}
-	}
-
-	if len(files) == 0 {
-		notify.Print(
-			notify.TypeWarning,
-			"No changes to commit.",
-			nil,
-		)
-
-		return nil
 	}
 
 	return files
@@ -223,7 +218,6 @@ func push() {
 	if hasOtherCommits() {
 		commitAgain()
 	}
-
 }
 
 func hasToPush() bool {
@@ -262,6 +256,16 @@ func yesOrNoCheck(ir input.InputReader, message string) bool {
 }
 
 func commitAgain() {
-	getFilesToCommit()
+	files := getFilesToCommit()
+	if len(files) == 0 {
+		notify.Print(
+			notify.TypeWarning,
+			"No changes to commit.",
+			nil,
+		)
+
+		return
+	}
+
 	start()
 }
