@@ -189,6 +189,7 @@ func selectedPrefix() string {
 }
 
 func push() {
+	//
 	if !hasToPush() {
 		notify.Print(
 			notify.TypeBlock,
