@@ -196,9 +196,6 @@ func push() {
 	survey.AskOne(prompt, &selected)
 
 	if !hasToPush() {
-		if hasOtherCommits() {
-			commitAgain()
-		}
 		notify.Print(
 			notify.TypeBlock,
 			"Skipping push.",
@@ -218,6 +215,10 @@ func push() {
 		)
 
 		return
+	}
+
+	if hasOtherCommits() {
+		commitAgain()
 	}
 
 	notify.Print(
