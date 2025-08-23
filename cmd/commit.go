@@ -267,5 +267,14 @@ func yesOrNoCheck(ir input.InputReader, message string) bool {
 func commitAgain() {
 	getFilesToCommit()
 	cmd := exec.Command("vinux", "commit")
-	cmd.Output()
+	err := cmd.Run()
+	if err != nil {
+		notify.Print(
+			notify.TypeError,
+			"Running vinux commit.",
+			err,
+		)
+
+		return
+	}
 }
