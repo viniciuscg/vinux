@@ -47,15 +47,6 @@ var commitCmd = &cobra.Command{
 		)
 
 		files := getFilesToCommit()
-		if len(files) == 0 {
-			notify.Print(
-				notify.TypeWarning,
-				"No changes to commit.",
-				nil,
-			)
-
-			return
-		}
 
 		selected := selectFiles(files)
 		if len(selected) == 0 {
@@ -102,6 +93,16 @@ func getFilesToCommit() []string {
 		if len(parts) >= 2 {
 			files = append(files, parts[1])
 		}
+	}
+
+	if len(files) == 0 {
+		notify.Print(
+			notify.TypeWarning,
+			"No changes to commit.",
+			nil,
+		)
+
+		return nil
 	}
 
 	return files
@@ -264,6 +265,7 @@ func yesOrNoCheck(ir input.InputReader, message string) bool {
 }
 
 func commitAgain() {
+	getFilesToCommit()
 	cmd := exec.Command("vinux", "commit")
 	cmd.Output()
 }
