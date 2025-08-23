@@ -216,16 +216,16 @@ func push() {
 
 		return
 	}
-
-	if hasOtherCommits() {
-		commitAgain()
-	}
-
 	notify.Print(
 		notify.TypeSuccess,
 		"Changes pushed successfully!",
 		nil,
 	)
+
+	if hasOtherCommits() {
+		commitAgain()
+	}
+
 }
 
 func hasToPush() bool {
