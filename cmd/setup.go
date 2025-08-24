@@ -313,4 +313,9 @@ func github() {
 		)
 	}
 
+	notify.Print(
+		notify.TypeSuccess,
+		"GitHub setup complete!",
+		nil,
+	)
 }

@@ -1,6 +1,7 @@
 package input
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/viniciuscg/survey/v2"
@@ -29,10 +30,11 @@ func ReadInput(prompt string, validators ...survey.Validator) (string, error) {
 }
 
 func YesOrNoCheck(message string) bool {
-	_, err := ReadInput(
+	test, err := ReadInput(
 		message+" (y or n): ",
 		survey.HasYesOrNoPrefix,
 	)
+	fmt.Print(test)
 	if err != nil {
 		notify.Print(
 			notify.TypeError,
