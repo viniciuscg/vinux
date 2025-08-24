@@ -91,6 +91,7 @@ func getFilesToCommit() []string {
 
 	lines := strings.Split(string(out), "\n")
 	var files []string
+	files = append(files, ".")
 	for _, line := range lines {
 		if strings.TrimSpace(line) == "" {
 			continue
@@ -132,7 +133,7 @@ func addFiles(files []string) {
 	notify.Print(
 		notify.TypeSuccess,
 		fmt.Sprintf(
-			"✅ Added files: %v\n",
+			"Added files: %v\n",
 			files,
 		),
 		nil,
@@ -164,7 +165,7 @@ func commit() {
 
 	notify.Print(
 		notify.TypeSuccess,
-		"✅ Changes committed successfully!",
+		"Changes committed successfully!",
 		nil,
 	)
 
@@ -214,38 +215,15 @@ func push() {
 }
 
 func hasToPush() bool {
-	return yesOrNoCheck(
-		input.NewConsoleReader(os.Stdin),
+	return input.YesOrNoCheck(
 		"Do you want to push the changes?",
 	)
 }
 
 func hasOtherCommits() bool {
-	return yesOrNoCheck(
-		input.NewConsoleReader(os.Stdin),
+	return input.YesOrNoCheck(
 		"Are there other commits to do?",
 	)
-}
-
-func yesOrNoCheck(ir input.InputReader, message string) bool {
-	input := ir.ReadInput(message + " (y or n): ")
-
-	cleanInput := strings.ToLower(strings.TrimSpace(input))
-
-	if strings.HasPrefix(cleanInput, "y") {
-		return true
-	}
-
-	if strings.HasPrefix(cleanInput, "n") {
-		return false
-	}
-
-	notify.Print(
-		notify.TypeError,
-		notify.ErrorInvalidYesOrNoInput,
-		nil,
-	)
-	return false
 }
 
 func recommit() {

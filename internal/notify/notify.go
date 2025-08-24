@@ -24,6 +24,8 @@ const (
 	TypeWrite
 
 	TypeBlock
+
+	TypeRetry
 )
 
 func Print(
@@ -57,6 +59,10 @@ func Print(
 	case TypeBlock:
 		prefix = "🚫 Block: "
 		primary = color.New(color.FgMagenta, color.Bold)
+
+	case TypeRetry:
+		prefix = "🔄 Retry: "
+		primary = color.New(color.FgBlue, color.Bold)
 
 	default:
 		prefix = "❓ Unknown: "

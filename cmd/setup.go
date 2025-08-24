@@ -6,8 +6,9 @@ import (
 	"os/exec"
 
 	"github.com/spf13/cobra"
+	"github.com/viniciuscg/survey/v2"
+	"github.com/viniciuscg/vinux/internal/input"
 	"github.com/viniciuscg/vinux/internal/notify"
-	"github.comviniciuscg/survey/v2"
 )
 
 type SetupType int
@@ -112,7 +113,7 @@ func tmux() {
 	)
 
 	if err := exec.Command("sudo", "apt", "install", "tmux").Run(); err != nil {
-		fmt.Println("❌ Error installing tmux:", err)
+		fmt.Println("Error installing tmux:", err)
 
 		return
 	}
@@ -155,7 +156,7 @@ func gogh() {
 		return
 	}
 
-	fmt.Println("✅ Gogh setup complete!")
+	fmt.Println("Gogh setup complete!")
 }
 
 func vsCode() {
@@ -211,25 +212,105 @@ func github() {
 		nil,
 	)
 
-	email := askForEmail()
-	if email == "" {
+	email, err := input.ReadInput(
+		"Enter your GitHub email:",
+		survey.EmailValidator,
+	)
+	if err != nil {
 		notify.Print(
-			notify.TypeWarning,
-			"No email provided. Skipping GitHub setup.",
-			nil,
+			notify.TypeError,
+			"Reading GitHub email.",
+			err,
 		)
 
 		return
 	}
-	//cmd := exec.Command("ssh-keygen", "-t", "ed25519", "-C", "your_email@example.com")
-}
 
-func askForEmail() string {
-	var email string
-	prompt := &survey.Input{
-		Message: "Enter your GitHub email:",
+	cmd := exec.Command("ssh-keygen", "-t", "ed25519", "-C", email)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		notify.Print(
+			notify.TypeError,
+			"Generating SSH key.",
+			err,
+		)
+
+		return
 	}
-	survey.AskOne(prompt, &email)
 
-	return email
+	cmd = exec.Command("eval", "$(ssh-agent -s)")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		notify.Print(
+			notify.TypeError,
+			"Starting ssh-agent.",
+			err,
+		)
+
+		return
+	}
+
+	cmd = exec.Command("ssh-add", "~/.ssh/id_ed25519")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		notify.Print(
+			notify.TypeError,
+			"Adding SSH key to ssh-agent.",
+			err,
+		)
+
+		return
+	}
+
+	data, err := os.ReadFile("~/.ssh/id_ed25519.pub")
+	if err != nil {
+		fmt.Println("Error reading SSH key:", err)
+		return
+	}
+
+	notify.Print(
+		notify.TypeSuccess,
+		fmt.Sprintf(
+			"SSH key generated! Add it to your GitHub account: %s\n",
+			data,
+		),
+		nil,
+	)
+
+	for {
+		cmd := exec.Command("ssh", "-T", "git@github.com")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err == nil {
+			notify.Print(
+				notify.TypeSuccess,
+				"SSH connection successful!",
+				nil,
+			)
+
+			break
+		}
+
+		retry := input.YesOrNoCheck("SSH connection failed. Do you want to retry?")
+		if !retry {
+			notify.Print(
+				notify.TypeWarning,
+				"SSH setup aborted by user.",
+				nil,
+			)
+
+			break
+		}
+
+		notify.Print(
+			notify.TypeRetry,
+			"Retrying SSH connection...",
+			nil,
+		)
+	}
+
 }
