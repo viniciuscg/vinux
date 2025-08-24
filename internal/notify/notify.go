@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	ErrorReadingInput        = "reading input: "
 	ErrorInvalidYesOrNoInput = "Invalid input. Please enter 'y' for yes or 'n' for no."
 )
 

@@ -7,8 +7,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/cobra"
+	"github.com/viniciuscg/survey/v2"
 	"github.com/viniciuscg/vinux/internal/input"
 	"github.com/viniciuscg/vinux/internal/notify"
 )
@@ -35,11 +35,11 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Commits changes to the repository",
 	Run: func(cmd *cobra.Command, args []string) {
-		start()
+		startCommitFlow()
 	},
 }
 
-func start() {
+func startCommitFlow() {
 	notify.Print(
 		notify.TypeInfo,
 		"Starting commit process...",
@@ -78,8 +78,7 @@ func init() {
 }
 
 func getFilesToCommit() []string {
-	cmd := exec.Command("git", "status", "--porcelain")
-	out, err := cmd.Output()
+	out, err := exec.Command("git", "status", "--porcelain").Output()
 	if err != nil {
 		notify.Print(
 			notify.TypeError,
@@ -120,9 +119,7 @@ func selectFiles(files []string) []string {
 func addFiles(files []string) {
 	args := append([]string{"add"}, files...)
 
-	cmd := exec.Command("git", args...)
-	err := cmd.Run()
-	if err != nil {
+	if err := exec.Command("git", args...).Run(); err != nil {
 		notify.Print(
 			notify.TypeError,
 			"Adding files to git.",
@@ -155,9 +152,7 @@ func commit() {
 	input = strings.TrimSpace(input)
 
 	commitMessage := fmt.Sprintf("%s %s", prefix, input)
-	cmd := exec.Command("git", "commit", "-m", commitMessage)
-	err := cmd.Run()
-	if err != nil {
+	if err := exec.Command("git", "commit", "-m", commitMessage).Run(); err != nil {
 		notify.Print(
 			notify.TypeError,
 			"Committing changes.",
@@ -197,9 +192,7 @@ func push() {
 		return
 	}
 
-	cmd := exec.Command("git", "push")
-	err := cmd.Run()
-	if err != nil {
+	if err := exec.Command("git", "push").Run(); err != nil {
 		notify.Print(
 			notify.TypeError,
 			"Pushing changes.",
@@ -267,5 +260,5 @@ func recommit() {
 		return
 	}
 
-	start()
+	startCommitFlow()
 }

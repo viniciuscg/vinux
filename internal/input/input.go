@@ -1,43 +1,30 @@
 package input
 
 import (
-	"bufio"
-	"io"
 	"strings"
 
-	"github.com/viniciuscg/vinux/internal/notify"
+	"github.com/viniciuscg/survey/v2"
 )
 
-type InputReader interface {
-	ReadInput(prompt string) string
-}
+func ReadInput(prompt string, validators ...survey.Validator) (string, error) {
+	var input string
+	err := survey.Ask(
+		[]*survey.Question{
+			{
+				Name:      "name",
+				Prompt:    &survey.Input{Message: prompt},
+				Validate:  survey.,
+				Transform: survey.Title,
+			},
+		},
 
-type ConsoleReader struct {
-	reader *bufio.Reader
-}
-
-func NewConsoleReader(
-	r io.Reader,
-) *ConsoleReader {
-	return &ConsoleReader{
-		reader: bufio.NewReader(r),
-	}
-}
-
-func (c *ConsoleReader) ReadInput(prompt string) string {
-	notify.Print(
-		notify.TypeWrite,
-		prompt,
-		nil,
+		&input,
 	)
-	input, err := c.reader.ReadString('\n')
+
+	validation := survey.ComposeValidators(validators...)
 	if err != nil {
-		notify.Print(
-			notify.TypeError,
-			notify.ErrorReadingInput,
-			err,
-		)
+		return "", err
 	}
 
-	return strings.TrimSpace(input)
+	return strings.TrimSpace(input), nil
 }
