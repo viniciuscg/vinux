@@ -58,7 +58,7 @@ func Print(
 
 	case TypeBlock:
 		prefix = "🚫 Block: "
-		primary = color.New(color.FgMagenta, color.Bold)
+		primary = color.New(color.FgRed, color.Bold)
 
 	case TypeRetry:
 		prefix = "🔄 Retry: "
