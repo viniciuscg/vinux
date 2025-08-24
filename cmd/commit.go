@@ -88,8 +88,7 @@ func getFilesToCommit() []string {
 	}
 
 	lines := strings.Split(string(out), "\n")
-	var files []string
-	files = append(files, ".")
+	files := []string{"add all files"}
 	for _, line := range lines {
 		if strings.TrimSpace(line) == "" {
 			continue
@@ -116,6 +115,10 @@ func selectFiles(files []string) []string {
 }
 
 func addFiles(files []string) {
+	if files[0] == "add all files" {
+		files = []string{"."}
+	}
+
 	args := append([]string{"add"}, files...)
 
 	if err := exec.Command("git", args...).Run(); err != nil {
@@ -180,7 +183,7 @@ func selectedPrefix() string {
 		Message: selectMessagePattern("Select commit Prefix"),
 		Options: commitPrefixOptions,
 	}
-	survey.AskOne(prompt, &selected)
+	survey.AskOne(prompt, &selected, survey.WithPageSize(20))
 
 	return selected
 }
