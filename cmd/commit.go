@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 
@@ -143,16 +141,21 @@ func addFiles(files []string) {
 func commit() {
 	prefix := selectedPrefix()
 
-	notify.Print(
-		notify.TypeWrite,
-		"Enter your commit message below",
-		nil,
+	message, err := input.ReadInput(
+		"Enter your commit message:",
+		survey.Required,
 	)
-	reader := bufio.NewReader(os.Stdin)
-	input, _ := reader.ReadString('\n')
-	input = strings.TrimSpace(input)
+	if err != nil {
+		notify.Print(
+			notify.TypeError,
+			"Reading commit message.",
+			err,
+		)
 
-	commitMessage := fmt.Sprintf("%s %s", prefix, input)
+		return
+	}
+
+	commitMessage := fmt.Sprintf("%s %s", prefix, message)
 	if err := exec.Command("git", "commit", "-m", commitMessage).Run(); err != nil {
 		notify.Print(
 			notify.TypeError,

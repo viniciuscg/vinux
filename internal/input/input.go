@@ -29,14 +29,9 @@ func ReadInput(prompt string, validators ...survey.Validator) (string, error) {
 }
 
 func YesOrNoCheck(message string) bool {
-	test, err := ReadInput(
+	_, err := ReadInput(
 		message+" (y or n): ",
 		survey.HasYesOrNoPrefix,
-	)
-	notify.Print(
-		notify.TypeInfo,
-		"Input received: "+test,
-		err,
 	)
 	if err != nil {
 		notify.Print(
@@ -48,5 +43,6 @@ func YesOrNoCheck(message string) bool {
 		return false
 	}
 
-	return false
+	s := strings.ToLower(message)
+	return strings.Contains(s, "y")
 }
