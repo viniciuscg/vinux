@@ -1,7 +1,6 @@
 package input
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/viniciuscg/survey/v2"
@@ -34,7 +33,11 @@ func YesOrNoCheck(message string) bool {
 		message+" (y or n): ",
 		survey.HasYesOrNoPrefix,
 	)
-	fmt.Print(test)
+	notify.Print(
+		notify.TypeInfo,
+		"Input received: "+test,
+		err,
+	)
 	if err != nil {
 		notify.Print(
 			notify.TypeError,
