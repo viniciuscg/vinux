@@ -116,7 +116,7 @@ func listRepos() {
 	for _, path := range repos {
 		notify.Print(
 			notify.TypeFolder,
-			fmt.Sprintf("%s", path),
+			path,
 			nil,
 		)
 	}
