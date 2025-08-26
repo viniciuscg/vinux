@@ -6,10 +6,6 @@ import (
 	"os"
 )
 
-const (
-	ErrorInvalidYesOrNoInput = "Invalid input. Please enter 'y' for yes or 'n' for no."
-)
-
 type MessageType int
 
 const (
@@ -26,6 +22,8 @@ const (
 	TypeBlock
 
 	TypeRetry
+
+	TypeFolder
 )
 
 func Print(
@@ -62,6 +60,10 @@ func Print(
 
 	case TypeRetry:
 		prefix = "🔄 Retry: "
+		primary = color.New(color.FgBlue, color.Bold)
+
+	case TypeFolder:
+		prefix = "📁 Folder: "
 		primary = color.New(color.FgBlue, color.Bold)
 
 	default:
