@@ -28,7 +28,6 @@ func Execute() {
 func printBanner() {
 	fig := figure.NewFigure("VINUX CLI!", "starwars", true)
 	lines := strings.Split(fig.String(), "\n")
-	// teste pro luiz
 	primary := color.New(color.FgHiCyan, color.Bold)
 
 	for _, line := range lines {
