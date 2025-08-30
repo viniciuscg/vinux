@@ -6,6 +6,7 @@ import (
 	"os/exec"
 
 	"github.com/spf13/cobra"
+	"github.com/viniciuscg/survey/v2"
 	"github.com/viniciuscg/vinux/internal/notify"
 	"github.com/viniciuscg/vinux/internal/storage"
 )
@@ -39,8 +40,7 @@ var repoListCmd = &cobra.Command{
 
 var repoCmd = &cobra.Command{
 	Use:   "repo",
-	Short: "If type 'vinux repo repoName' you will enter in the repo shell",
-	Args:  cobra.MinimumNArgs(1),
+	Short: "If type 'vinux repo repoName' you will enter in the repo shell if not it will show a list of repos to select",
 	Run: func(cmd *cobra.Command, args []string) {
 		if !storage.VerifyPathExists(storage.GetReposDir()) {
 			notify.Print(
@@ -52,7 +52,11 @@ var repoCmd = &cobra.Command{
 			return
 		}
 
-		goToRepo(args[0])
+		if len(args) > 0 {
+			goToRepo(args[0])
+		}
+
+		goToRepoWithoutArgs()
 	},
 }
 
@@ -151,4 +155,30 @@ func goToRepo(name string) {
 	cmd.Stderr = os.Stderr
 	cmd.Run()
 
+}
+
+func goToRepoWithoutArgs() {
+	repos, err := storage.ListRepos()
+	if err != nil {
+		notify.Print(
+			notify.TypeError,
+			"Getting current directory",
+			err,
+		)
+
+		return
+	}
+
+	goToRepo(selectedRepo(repos))
+}
+
+func selectedRepo(repos []string) string {
+	var selected string
+	prompt := &survey.Select{
+		Message: "Select a repository:",
+		Options: repos,
+	}
+	survey.AskOne(prompt, &selected, survey.WithPageSize(20))
+
+	return selected
 }
